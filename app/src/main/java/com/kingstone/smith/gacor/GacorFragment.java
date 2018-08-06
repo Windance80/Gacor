@@ -1,10 +1,8 @@
 package com.kingstone.smith.gacor;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +12,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HeatSpot.OnFragmentInteractionListener} interface
+ * {@link GacorFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HeatSpot#newInstance} factory method to
+ * Use the {@link GacorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HeatSpot extends Fragment {
+public class GacorFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +29,7 @@ public class HeatSpot extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public HeatSpot() {
+    public GacorFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +39,11 @@ public class HeatSpot extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HeatSpot.
+     * @return A new instance of fragment GacorFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HeatSpot newInstance(String param1, String param2) {
-        HeatSpot fragment = new HeatSpot();
+    public static GacorFragment newInstance(String param1, String param2) {
+        GacorFragment fragment = new GacorFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,18 +64,7 @@ public class HeatSpot extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_heat_spot, container, false);
-
-        FloatingActionButton fab = view.findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddHeatspotActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        return view;
+        return inflater.inflate(R.layout.fragment_gacor, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
