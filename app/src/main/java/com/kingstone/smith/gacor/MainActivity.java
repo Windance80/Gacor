@@ -6,15 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements
-        HeatSpot.OnFragmentInteractionListener, GacorFragment.OnFragmentInteractionListener{
+        HeatSpotFragment.OnFragmentInteractionListener,
+        GacorFragment.OnFragmentInteractionListener,
+        PlacesFragment.OnFragmentInteractionListener{
 
-    private TextView mTextMessage;
+//    private TextView mTextMessage;
     private FragmentManager mFragmentManager = getSupportFragmentManager();
 
     @Override
@@ -31,18 +31,16 @@ public class MainActivity extends AppCompatActivity implements
             switch (item.getItemId()) {
                 case R.id.navigation_gacor:
                     GacorFragment gacorFragment = GacorFragment.newInstance("","");
-
                     mFragmentManager.beginTransaction().replace(R.id.fragment_container, gacorFragment).commit();
-
                     return true;
                 case R.id.navigation_heatspot:
-                    HeatSpot heatSpot = HeatSpot.newInstance("","");
-                    mFragmentManager.beginTransaction().replace(R.id.fragment_container, heatSpot).commit();
-
+                    HeatSpotFragment heatSpotFragment = HeatSpotFragment.newInstance("","");
+                    mFragmentManager.beginTransaction().replace(R.id.fragment_container, heatSpotFragment).commit();
                     return true;
-//                case R.id.navigation_notifications:
-//                    mTextMessage.setText(R.string.title_notifications);
-//                    return true;
+                case R.id.navigation_crowd:
+                    PlacesFragment placesFragment = PlacesFragment.newInstance("", "");
+                    mFragmentManager.beginTransaction().replace(R.id.fragment_container, placesFragment).commit();
+                    return true;
             }
             return false;
         }

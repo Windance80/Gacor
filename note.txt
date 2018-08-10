@@ -1,4 +1,2 @@
 working on:
--Add the database using room to add heatspot time from monday to sunday
--use recyclerView with listCard
--add time every 15min to input the heatmap location and pictures from grab app heat map
+-add mall, hospital, school, hall
