@@ -30,6 +30,11 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <provider
+            android:authorities="com.kingstone.smith.gacor"
+            android:name=".data.GacorProvider"
+            android:exported="false"
+        />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0FkATQuV6KtjFZVYbj0CHKwsBJCbd4a0" />
