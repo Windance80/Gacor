@@ -4,7 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,12 +27,14 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
     public interface PlacesAdapterOnClickHandler {
         void onClick(double lat, double lng);
-    };
+    }
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public class PlacesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class PlacesAdapterViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener{
         // each data item is just a string in this case
         public TextView mTextViewName;
         public TextView mTextViewDetail;
@@ -40,6 +46,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             mTextViewDetail = v.findViewById(R.id.textViewDetail);
             mTextViewLatLong = v.findViewById(R.id.textViewLatLong);
             v.setOnClickListener(this);
+            v.setOnCreateContextMenuListener(this);
         }
 
         @Override
@@ -47,6 +54,32 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             mCursor.moveToPosition(getAdapterPosition());
             mClickHandler.onClick(mCursor.getDouble(PlacesFragment.INDEX_PLACE_LAT), mCursor.getDouble(PlacesFragment.INDEX_PLACE_LANG));
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            MenuItem Edit = contextMenu.add(Menu.NONE, 1, 1, "Edit");
+            MenuItem Delete = contextMenu.add(Menu.NONE, 2, 2, "Delete");
+            Edit.setOnMenuItemClickListener(onEditMenu);
+            Delete.setOnMenuItemClickListener(onEditMenu);
+        }
+
+        //ADD AN ONMENUITEM LISTENER TO EXECUTE COMMANDS ONCLICK OF CONTEXT MENU TASK
+        private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case 1:
+                        //Do stuff
+                        break;
+
+                    case 2:
+                        //Do stuff
+
+                        break;
+                }
+                return true;
+            }
+        };
     }
 
     public PlacesAdapter(Context context, PlacesAdapterOnClickHandler clickHandler) {

@@ -18,7 +18,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -96,6 +98,7 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onCreate(savedInstanceState);
         mContext = getContext();
         mActivity = getActivity();
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -109,6 +112,7 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
         View view = inflater.inflate(R.layout.fragment_gacor, container, false);
         mTextViewDistancce = view.findViewById(R.id.textVIewDistance);
         mRecyclerView = view.findViewById(R.id.recyclerViewGacor);
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
@@ -179,6 +183,8 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
+                            mGacorArrayList.clear();
+
                             Location location1 = new Location("pointA");
                             location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
                             location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));

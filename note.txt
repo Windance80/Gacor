@@ -1,2 +1,2 @@
 working on:
--add mall, hospital, school, hall
+-Implement onClick contextual menu

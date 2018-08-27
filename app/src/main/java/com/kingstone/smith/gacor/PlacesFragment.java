@@ -43,7 +43,9 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link PlacesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlacesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, PlacesAdapter.PlacesAdapterOnClickHandler {
+public class PlacesFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        PlacesAdapter.PlacesAdapterOnClickHandler{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,16 +64,18 @@ public class PlacesFragment extends Fragment implements LoaderManager.LoaderCall
     final PlacePicker.IntentBuilder mPlacePickerIntentBuilder = new PlacePicker.IntentBuilder();
 
     public static final String[] PLACES_PROJECTION = {
+            GacorContract.PlaceEntry._ID,
             GacorContract.PlaceEntry.COLUMN_PLACE_NAME,
             GacorContract.PlaceEntry.COLUMN_PLACE_DETAIL,
             GacorContract.PlaceEntry.COLUMN_PLACE_LAT,
             GacorContract.PlaceEntry.COLUMN_PLACE_LANG
     };
 
-    public static final int INDEX_PLACE_NAME = 0;
-    public static final int INDEX_PLACE_DETAIL = 1;
-    public static final int INDEX_PLACE_LAT = 2;
-    public static final int INDEX_PLACE_LANG = 3;
+    public static final int INDEX_PLACE_ID = 0;
+    public static final int INDEX_PLACE_NAME = 1;
+    public static final int INDEX_PLACE_DETAIL = 2;
+    public static final int INDEX_PLACE_LAT = 3;
+    public static final int INDEX_PLACE_LANG = 4;
 
     private static final int ID_PLACE_LOADER = 44;
 
@@ -205,6 +209,7 @@ public class PlacesFragment extends Fragment implements LoaderManager.LoaderCall
 //        Toast.makeText(getContext(), places.getName(), Toast.LENGTH_SHORT)
 //                .show();
     }
+
 
     @NonNull
     @Override
