@@ -7,8 +7,18 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/textVIewDistance"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Gacor Fragment" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_margin="8dp"
+        android:id="@+id/recyclerViewGacor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </FrameLayout>

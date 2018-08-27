@@ -79,7 +79,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
                 String.valueOf(mCursor.getDouble(PlacesFragment.INDEX_PLACE_LANG)));
 
 //        holder.mTextViewName.setText(mPlaces.get(position).getName());
-//        holder.mTextViewDetail.setText(mPlaces.get(position).getDetail());
+//        hold  er.mTextViewDetail.setText(mPlaces.get(position).getDetail());
 //        holder.mTextViewLatLong.setText(
 //                "LatLong: " +
 //                String.valueOf(mPlaces.get(position).getLattitude()) + ", " +
