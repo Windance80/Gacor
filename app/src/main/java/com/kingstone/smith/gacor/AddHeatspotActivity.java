@@ -72,6 +72,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
             }
         });
 
+        mButtonSimpan = findViewById(R.id.button_simpan);
         mButtonSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

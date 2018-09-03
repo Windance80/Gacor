@@ -78,7 +78,7 @@ public class PlacesFragment extends Fragment implements
     public static final int INDEX_PLACE_LAT = 3;
     public static final int INDEX_PLACE_LANG = 4;
 
-    private static final int ID_PLACE_LOADER = 44;
+    static final int ID_PLACE_LOADER = 44;
 
     //mock data
     private String[] myDataset = {"a", "b", "c"};

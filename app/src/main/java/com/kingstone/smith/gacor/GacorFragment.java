@@ -69,8 +69,6 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-    private static final int ID_PLACE_LOADER = 45;
-
     public GacorFragment() {
         // Required empty public constructor
     }
@@ -130,7 +128,7 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
 
-        getActivity().getSupportLoaderManager().initLoader(ID_PLACE_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(PlacesFragment.ID_PLACE_LOADER, null, this);
 
         return view;
     }
@@ -153,7 +151,7 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case ID_PLACE_LOADER:
+            case PlacesFragment.ID_PLACE_LOADER:
                 Uri queryUri = GacorContract.PlaceEntry.CONTENT_URI;
                 String sortOrder = GacorContract.PlaceEntry._ID + " ASC";
 
@@ -182,39 +180,41 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
                 mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        if (location != null) {
-                            mGacorArrayList.clear();
+                        if (data != null) {
+                            if (location != null) {
+                                mGacorArrayList.clear();
 
-                            Location location1 = new Location("pointA");
-                            location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
-                            location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));
-
-                            double distance = location.distanceTo(location1);
-
-                            mTextViewDistancce.setText(
-                                    data.getString(PlacesFragment.INDEX_PLACE_NAME) + " " +
-                                            String.valueOf(((int) (distance/100.0))/10.0) + " Km");
-
-                            mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance/100.0))/10.0)));
-
-                            while (data.moveToNext()) {
+                                Location location1 = new Location("pointA");
                                 location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
                                 location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));
 
-                                distance = location.distanceTo(location1);
-                                mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance/100.0))/10.0)));
-                            }
+                                double distance = location.distanceTo(location1);
 
-                            Collections.sort(mGacorArrayList, new Comparator<Gacor>() {
-                                @Override
-                                public int compare(Gacor gacor, Gacor t1) {
-                                    String distance1 = gacor.getmDistance();
-                                    String distance2 = t1.getmDistance();
-                                    return distance1.compareTo(distance2);
+                                mTextViewDistancce.setText(
+                                        data.getString(PlacesFragment.INDEX_PLACE_NAME) + " " +
+                                                String.valueOf(((int) (distance / 100.0)) / 10.0) + " Km");
+
+                                mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+
+                                while (data.moveToNext()) {
+                                    location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
+                                    location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));
+
+                                    distance = location.distanceTo(location1);
+                                    mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
                                 }
-                            });
 
-                            mAdapter.notifyDataSetChanged();
+                                Collections.sort(mGacorArrayList, new Comparator<Gacor>() {
+                                    @Override
+                                    public int compare(Gacor gacor, Gacor t1) {
+                                        String distance1 = gacor.getmDistance();
+                                        String distance2 = t1.getmDistance();
+                                        return distance1.compareTo(distance2);
+                                    }
+                                });
+
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
                 });
