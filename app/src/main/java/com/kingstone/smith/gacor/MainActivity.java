@@ -56,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        GacorFragment gacorFragment = GacorFragment.newInstance("","");
-        mFragmentManager.beginTransaction().replace(R.id.fragment_container, gacorFragment).commit();
+        navigation.setSelectedItemId((int) 1);
+
+//        GacorFragment gacorFragment = GacorFragment.newInstance("","");
+//        mFragmentManager.beginTransaction().replace(R.id.fragment_container, gacorFragment).commit();
     }
 
 }

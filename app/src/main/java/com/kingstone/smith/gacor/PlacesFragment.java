@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.kingstone.smith.gacor.data.GacorContract;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -190,6 +191,13 @@ public class PlacesFragment extends Fragment implements
                 }
             }
         }
+    }
+
+    @Override
+    public void onMenuItemClick(long id) {
+        Uri uri = ContentUris.withAppendedId(GacorContract.PlaceEntry.CONTENT_URI, id);
+
+        getActivity().getContentResolver().delete(uri, null, null);
     }
 
     @Override

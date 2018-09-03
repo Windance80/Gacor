@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -29,6 +30,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
     static EditText mEditTextTime;
     static EditText mEditTextDate;
     EditText mEditTextLocation;
+    Button mButtonSimpan;
 
     int PLACE_PICKER_REQUEST = 1;
 
@@ -67,6 +69,13 @@ public class AddHeatspotActivity extends AppCompatActivity {
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        mButtonSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
             }
         });
     }

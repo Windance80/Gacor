@@ -7,13 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.kingstone.smith.gacor.data.GacorContract;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdapterViewHolder> {
 //    private String[] mDataset;
@@ -27,8 +26,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
     public interface PlacesAdapterOnClickHandler {
         void onClick(double lat, double lng);
+        void onMenuItemClick(long id);
     }
-
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -61,19 +60,22 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             MenuItem Delete = contextMenu.add(Menu.NONE, 2, 2, "Delete");
             Edit.setOnMenuItemClickListener(onEditMenu);
             Delete.setOnMenuItemClickListener(onEditMenu);
+
         }
+
 
         //ADD AN ONMENUITEM LISTENER TO EXECUTE COMMANDS ONCLICK OF CONTEXT MENU TASK
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                mCursor.moveToPosition(getAdapterPosition());
                 switch (item.getItemId()) {
                     case 1:
                         //Do stuff
                         break;
 
-                    case 2:
-                        //Do stuff
+                    case 2: // delete
+                        mClickHandler.onMenuItemClick(mCursor.getLong(PlacesFragment.INDEX_PLACE_ID));
 
                         break;
                 }

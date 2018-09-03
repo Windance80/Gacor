@@ -28,6 +28,7 @@ public final class GacorContract {
      * as the ContentProvider hasn't been given any information on what to do with "staff".
      */
     public static final String PATH_PLACE = "places";
+    public static final String PATH_HEATSPOT = "heatsport";
 
 
     public static final class PlaceEntry implements BaseColumns {
@@ -48,6 +49,33 @@ public final class GacorContract {
 
         /** TABLE */
         public final static String TABLE_NAME = "places";
+
+        /** FIELD**/
+        public final static String _ID = BaseColumns._ID;
+        public final static String COLUMN_PLACE_NAME ="place";
+        public final static String COLUMN_PLACE_DETAIL = "detail";
+        public final static String COLUMN_PLACE_LAT = "lat";
+        public final static String COLUMN_PLACE_LANG = "lang";
+    }
+
+    public static final class HeatspotEntry implements BaseColumns {
+        /** The content URI to access the pet data in the provider */
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_HEATSPOT);
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a list of places.
+         */
+        public static final String CONTENT_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_HEATSPOT;
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single place.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_HEATSPOT;
+
+        /** TABLE */
+        public final static String TABLE_NAME = "heatspot";
 
         /** FIELD**/
         public final static String _ID = BaseColumns._ID;

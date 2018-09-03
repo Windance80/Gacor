@@ -224,7 +224,6 @@ public class GacorFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(@NonNull android.support.v4.content.Loader<Cursor> loader) {
-
     }
 
     @Override
