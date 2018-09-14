@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.kingstone.smith.gacor.Gacor;
+
 import static com.kingstone.smith.gacor.data.GacorDbHelper.LOG_TAG;
 
 public class GacorProvider extends ContentProvider {
@@ -21,6 +23,9 @@ public class GacorProvider extends ContentProvider {
      */
     public static final int CODE_PLACE = 100;
     public static final int CODE_PLACE_WITH_ID = 101;
+
+    public static final int CODE_HEATSPOT = 200;
+    public static final int CODE_HEATSPOT_WITH_ID = 201;
 
     /*
      * The URI Matcher used by this content provider. The leading "s" in this variable name
@@ -73,6 +78,10 @@ public class GacorProvider extends ContentProvider {
          */
         matcher.addURI(authority, GacorContract.PATH_PLACE + "/#", CODE_PLACE_WITH_ID);
 
+        //heatspot table matcher
+        matcher.addURI(authority, GacorContract.PATH_HEATSPOT, CODE_HEATSPOT);
+        matcher.addURI(authority, GacorContract.PATH_HEATSPOT + "/#", CODE_HEATSPOT_WITH_ID);
+
         return matcher;
     }
 
@@ -109,7 +118,7 @@ public class GacorProvider extends ContentProvider {
              * In this case, we want to return a cursor that contains every row of places data
              * in our places table.
              */
-            case CODE_PLACE: {
+            case CODE_PLACE:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         GacorContract.PlaceEntry.TABLE_NAME,
                         projection,
@@ -118,10 +127,9 @@ public class GacorProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-
                 break;
-            }
-            case CODE_PLACE_WITH_ID: {
+
+            case CODE_PLACE_WITH_ID:
                 selection = GacorContract.PlaceEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 cursor = mOpenHelper.getReadableDatabase().query(
@@ -132,9 +140,32 @@ public class GacorProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-
                 break;
-            }
+
+            case CODE_HEATSPOT:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        GacorContract.HeatspotEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
+            case CODE_HEATSPOT_WITH_ID:
+                selection = GacorContract.HeatspotEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        GacorContract.HeatspotEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -162,6 +193,10 @@ public class GacorProvider extends ContentProvider {
                 return GacorContract.PlaceEntry.CONTENT_LIST_TYPE;
             case CODE_PLACE_WITH_ID:
                 return GacorContract.PlaceEntry.CONTENT_ITEM_TYPE;
+            case CODE_HEATSPOT:
+                return GacorContract.HeatspotEntry.CONTENT_LIST_TYPE;
+            case CODE_HEATSPOT_WITH_ID:
+                return GacorContract.HeatspotEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
         }
@@ -202,6 +237,34 @@ public class GacorProvider extends ContentProvider {
                 // Return the new URI with the ID (of the newly inserted row) appended at the end
                 return ContentUris.withAppendedId(uri, id);
 
+            case CODE_HEATSPOT:
+                // Check that the name is not null
+                if (contentValues.getAsString(GacorContract.HeatspotEntry.COLUMN_NAME) == null) {
+                    throw new IllegalArgumentException("Place requires a name");
+                }
+
+                if (contentValues.getAsDouble(GacorContract.HeatspotEntry.COLUMN_LAT) == null) {
+                    throw new IllegalArgumentException("Place requires valid lattitude");
+                }
+
+                if (contentValues.getAsDouble(GacorContract.HeatspotEntry.COLUMN_LANG) == null) {
+                    throw new IllegalArgumentException("Place requires valid longitude");
+                }
+
+                // Insert the new place with the given contentValues
+                long idHeatspot = mOpenHelper.getWritableDatabase().insert(GacorContract.HeatspotEntry.TABLE_NAME, null, contentValues);
+                // If the ID is -1, then the insertion failed. Log an error and return null.
+                if (idHeatspot == -1) {
+                    Log.e(LOG_TAG, "Failed to insert row for " + uri);
+                    return null;
+                }
+
+                // Notify all listeners that the data has changed for the pet content URI
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                // Return the new URI with the ID (of the newly inserted row) appended at the end
+                return ContentUris.withAppendedId(uri, idHeatspot);
+
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
@@ -238,6 +301,21 @@ public class GacorProvider extends ContentProvider {
                         selection, 
                         selectionArgs);
                 break;
+            case CODE_HEATSPOT:
+                numRowsDeleted = mOpenHelper.getWritableDatabase().delete(
+                        GacorContract.HeatspotEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case CODE_HEATSPOT_WITH_ID:
+                // Delete a single row given by the ID in the URI
+                selection = GacorContract.HeatspotEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                numRowsDeleted = mOpenHelper.getWritableDatabase().delete(
+                        GacorContract.HeatspotEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -262,10 +340,74 @@ public class GacorProvider extends ContentProvider {
                 selection = GacorContract.PlaceEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updatePlace(uri, contentValues, selection, selectionArgs);
+            case CODE_HEATSPOT:
+                return updateHeatspot(uri, contentValues, selection, selectionArgs);
+            case CODE_HEATSPOT_WITH_ID:
+                // For the CODE_PLACE_WITH_ID code, extract out the ID from the URI,
+                // so we know which row to update. Selection will be "_id=?" and selection
+                // arguments will be a String array containing the actual ID.
+                selection = GacorContract.HeatspotEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateHeatspot(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
 
+    }
+
+    private int updateHeatspot(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        // check the date
+        if (values.containsKey(GacorContract.HeatspotEntry.COLUMN_DATE)) {
+            long date = values.getAsLong(GacorContract.HeatspotEntry.COLUMN_DATE);
+            if (date == 0) {
+                throw new IllegalArgumentException("Time and Date required");
+            }
+        }
+
+        // If the {@link PlaceEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(GacorContract.HeatspotEntry.COLUMN_NAME)) {
+            String name = values.getAsString(GacorContract.HeatspotEntry.COLUMN_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Place requires a name");
+            }
+        }
+
+        // If the {@link PlaceEntry#COLUMN_PET_GENDER} key is present,
+        // check that the gender value is valid.
+        if (values.containsKey(GacorContract.HeatspotEntry.COLUMN_LAT)) {
+            Double lat = values.getAsDouble(GacorContract.HeatspotEntry.COLUMN_LAT);
+            if (lat == null) {
+                throw new IllegalArgumentException("Place requires lattitude");
+            }
+        }
+
+        // If the {@link PlaceEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the weight value is valid.
+        if (values.containsKey(GacorContract.HeatspotEntry.COLUMN_LANG)) {
+            // Check that the lang is greater than or equal to 0 kg
+            Double lang = values.getAsDouble(GacorContract.HeatspotEntry.COLUMN_LANG);
+            if (lang ==null) {
+                throw new IllegalArgumentException("Place requires longitude");
+            }
+        }
+
+        // If there are no values to update, then don't try to update the database
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Perform the update on the database and get the number of rows affected
+        int rowsUpdated = mOpenHelper.getWritableDatabase().update(GacorContract.HeatspotEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        // If 1 or more rows were updated, then notify all listeners that the data at the
+        // given URI has changed
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows updated
+        return rowsUpdated;
     }
 
     /**

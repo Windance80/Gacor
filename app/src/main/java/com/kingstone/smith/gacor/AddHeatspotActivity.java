@@ -1,11 +1,12 @@
 package com.kingstone.smith.gacor;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +23,9 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.kingstone.smith.gacor.data.GacorContract;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class AddHeatspotActivity extends AppCompatActivity {
@@ -32,12 +35,34 @@ public class AddHeatspotActivity extends AppCompatActivity {
     EditText mEditTextLocation;
     Button mButtonSimpan;
 
+    static int mYear;
+    static int mMonth;
+    static int mDay;
+    static int mHour;
+    static int mMinute;
+    static Calendar mCalendar;
+
+    //table var
+    long mPlaceDate;
+    String mPlaceName;
+    String mPlaceDetail;
+    double mPlaceLat;
+    double mPlaceLng;
+
+
     int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_heatspot);
+
+        mCalendar = Calendar.getInstance();
+        mYear = mCalendar.get(Calendar.YEAR);
+        mMonth = mCalendar.get(Calendar.MONTH);
+        mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
+        mHour = mCalendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = mCalendar.get(Calendar.MINUTE);
 
         mEditTextTime = findViewById(R.id.time);
         mEditTextTime.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +72,8 @@ public class AddHeatspotActivity extends AppCompatActivity {
                 dialogFragment.show(getSupportFragmentManager(), "timePicker");
             }
         });
+        //Initialize the time
+        setTime();
 
         mEditTextDate = findViewById(R.id.date);
         mEditTextDate.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +83,8 @@ public class AddHeatspotActivity extends AppCompatActivity {
                 newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         });
+        //Initialize the date
+        setDate();
 
         final PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         mEditTextLocation = findViewById(R.id.location);
@@ -76,7 +105,36 @@ public class AddHeatspotActivity extends AppCompatActivity {
         mButtonSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                mCalendar.clear();
+                mCalendar.set(mYear, mMonth, mDay, mHour, mMinute);
+                mPlaceDate = mCalendar.getTimeInMillis();
+
+                // insert to db Heatspot entry
+                ContentValues values = new ContentValues();
+                values.put(GacorContract.HeatspotEntry.COLUMN_DATE, mPlaceDate);
+                values.put(GacorContract.HeatspotEntry.COLUMN_NAME, mPlaceName);
+                values.put(GacorContract.HeatspotEntry.COLUMN_DETAIL, mPlaceDetail);
+                values.put(GacorContract.HeatspotEntry.COLUMN_LAT, mPlaceLat);
+                values.put(GacorContract.HeatspotEntry.COLUMN_LANG, mPlaceLng);
+
+                long id;
+                try {
+                    Uri newUri = getContentResolver().insert(GacorContract.HeatspotEntry.CONTENT_URI, values);
+                    id = ContentUris.parseId(newUri);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(AddHeatspotActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if ( id > 0) {
+                    Toast.makeText(AddHeatspotActivity.this, "Places added!", Toast.LENGTH_LONG).show();
+//                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(AddHeatspotActivity.this, "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();
+                }
+
+//                String localizedDayName = new SimpleDateFormat("HH:mm").format(lDate);
+//                Toast.makeText(getApplicationContext(), "hh:mm " + localizedDayName, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -84,8 +142,14 @@ public class AddHeatspotActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
+                Place place = PlacePicker.getPlace(this, data);
                 mEditTextLocation.setText(place.getName() + "\n" + place.getLatLng().toString());
+
+                mPlaceName = place.getName().toString();
+                mPlaceDetail = place.getAddress().toString();
+                mPlaceLat = ((double)((int)(place.getLatLng().latitude * 1000000.0)))/1000000.0;
+                mPlaceLng = ((double)((int)(place.getLatLng().longitude * 1000000.0)))/1000000.0;
+
 //                String latLong = String.format("LatLong: @s", place.getLatLng());
 //                String toastMsg = String.format("Place: %s", place.getName());
 //                Toast.makeText(this, toastMsg + " " + place.getLatLng().toString(), Toast.LENGTH_LONG).show();
@@ -97,9 +161,8 @@ public class AddHeatspotActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
+            int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
+            int minute = mCalendar.get(Calendar.MINUTE);
 
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
@@ -108,7 +171,9 @@ public class AddHeatspotActivity extends AppCompatActivity {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            mEditTextTime.setText(hourOfDay + ":" + minute);
+            mHour = hourOfDay;
+            mMinute = minute;
+            setTime();
         }
     }
 
@@ -117,10 +182,9 @@ public class AddHeatspotActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+            int year = mCalendar.get(Calendar.YEAR);
+            int month = mCalendar.get(Calendar.MONTH);
+            int day = mCalendar.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
@@ -128,7 +192,22 @@ public class AddHeatspotActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
-            mEditTextDate.setText(day + "/" + (month + 1) + "/" + year);
+            mYear = year;
+            mMonth = month;
+            mDay = day;
+            setDate();
         }
+    }
+
+    private static void setTime() {
+        mCalendar.clear();
+        mCalendar.set(mYear, mMonth, mDay, mHour, mMinute);
+        mEditTextTime.setText(new SimpleDateFormat("HH:mm").format(mCalendar.getTimeInMillis()));
+    }
+
+    private static void setDate() {
+        mCalendar.clear();
+        mCalendar.set(mYear, mMonth, mDay, mHour, mMinute);
+        mEditTextDate.setText(new SimpleDateFormat("EEEE, dd MMM yyyy").format(mCalendar.getTimeInMillis()));
     }
 }

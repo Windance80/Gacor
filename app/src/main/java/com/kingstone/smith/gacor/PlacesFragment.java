@@ -1,7 +1,10 @@
 package com.kingstone.smith.gacor;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -51,6 +54,8 @@ public class PlacesFragment extends Fragment implements
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_CODE_COARSE = 777;
+    private static final int REQUEST_CODE_FINE = 666;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -128,13 +133,16 @@ public class PlacesFragment extends Fragment implements
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    startActivityForResult(mPlacePickerIntentBuilder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+
+                    try {
+                        startActivityForResult(mPlacePickerIntentBuilder.build(getActivity()), PLACE_PICKER_REQUEST);
+                    } catch (GooglePlayServicesRepairableException e) {
+                        e.printStackTrace();
+                    } catch (GooglePlayServicesNotAvailableException e) {
+                        e.printStackTrace();
+                    }
+
+
             }
         });
 
@@ -151,7 +159,7 @@ public class PlacesFragment extends Fragment implements
         mDividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(mDividerItemDecoration);
 
-        // specify an adapter (see also next example)
+        // specify an adapter (see also next example)m
 //        mAdapter = new PlacesAdapter(myDataset);
 //        mPlaces.add(new Places("Baturaja", "Sum-Sel", -4.126947, 104.164174));
         mAdapter = new PlacesAdapter(getContext(), this);
@@ -165,7 +173,7 @@ public class PlacesFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, getContext());
+                Place place = PlacePicker.getPlace(getContext(), data);
 //                mEditTextLocation.setText(place.getName() + "\n" + place.getLatLng().toString());
                 double lat = ((double)((int)(place.getLatLng().latitude * 1000000.0)))/1000000.0;
                 double lng = ((double)((int)(place.getLatLng().longitude * 1000000.0)))/1000000.0;

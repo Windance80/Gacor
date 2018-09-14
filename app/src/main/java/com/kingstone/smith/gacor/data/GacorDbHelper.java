@@ -14,7 +14,7 @@ public class GacorDbHelper extends SQLiteOpenHelper {
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     /**
      * Constructs a new instance of {@link GacorDbHelper}.
@@ -38,8 +38,17 @@ public class GacorDbHelper extends SQLiteOpenHelper {
                 + GacorContract.PlaceEntry.COLUMN_PLACE_LAT + " REAL NOT NULL, "
                 + GacorContract.PlaceEntry.COLUMN_PLACE_LANG + " REAL NOT NULL);";
 
+        String SQL_CREATE_HEATSPOT_TABLE =  "CREATE TABLE " + GacorContract.HeatspotEntry.TABLE_NAME + " ("
+                + GacorContract.HeatspotEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + GacorContract.HeatspotEntry.COLUMN_DATE + " INTEGER NOT NULL, "
+                + GacorContract.HeatspotEntry.COLUMN_NAME + " TEXT NOT NULL, "
+                + GacorContract.HeatspotEntry.COLUMN_DETAIL + " TEXT, "
+                + GacorContract.HeatspotEntry.COLUMN_LAT + " REAL NOT NULL, "
+                + GacorContract.HeatspotEntry.COLUMN_LANG + " REAL NOT NULL);";
+
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_PLACES_TABLE);
+        db.execSQL(SQL_CREATE_HEATSPOT_TABLE);
     }
 
     /**
@@ -49,6 +58,7 @@ public class GacorDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // The database is still at version 1, so there's nothing to do be done here.
         db.execSQL("DROP TABLE IF EXISTS " + GacorContract.PlaceEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + GacorContract.HeatspotEntry.TABLE_NAME);
         onCreate(db);
     }
 }

@@ -79,9 +79,10 @@ public final class GacorContract {
 
         /** FIELD**/
         public final static String _ID = BaseColumns._ID;
-        public final static String COLUMN_PLACE_NAME ="place";
-        public final static String COLUMN_PLACE_DETAIL = "detail";
-        public final static String COLUMN_PLACE_LAT = "lat";
-        public final static String COLUMN_PLACE_LANG = "lang";
+        public final static String COLUMN_DATE ="datetime";
+        public final static String COLUMN_NAME ="place";
+        public final static String COLUMN_DETAIL = "detail";
+        public final static String COLUMN_LAT = "lat";
+        public final static String COLUMN_LANG = "lang";
     }
 }

@@ -1,2 +1,2 @@
 working on:
--Implement onClick contextual menu
+-Create table for heatspot
