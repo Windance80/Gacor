@@ -1,2 +1,2 @@
 working on:
--Create table for heatspot
+-Implement Heatspot table to Heatspot Fragment to display data

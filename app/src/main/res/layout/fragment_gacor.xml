@@ -8,7 +8,6 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:visibility="gone"
-        android:layout_margin="8dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/textVIewDistance"
         android:layout_width="match_parent"

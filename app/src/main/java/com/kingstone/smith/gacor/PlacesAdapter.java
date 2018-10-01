@@ -60,7 +60,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             MenuItem Delete = contextMenu.add(Menu.NONE, 2, 2, "Delete");
             Edit.setOnMenuItemClickListener(onEditMenu);
             Delete.setOnMenuItemClickListener(onEditMenu);
-
         }
 
 
