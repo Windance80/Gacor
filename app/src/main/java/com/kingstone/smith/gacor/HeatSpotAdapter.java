@@ -36,9 +36,9 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
 
         public HeatSpotAdapterViewHolder(View itemView) {
             super(itemView);
-            itemView.findViewById(R.id.textViewDate);
-            itemView.findViewById(R.id.textViewTime);
-            itemView.findViewById(R.id.textViewPlace);
+            mTextViewDate = itemView.findViewById(R.id.textViewDate);
+            mTextViewTime = itemView.findViewById(R.id.textViewTime);
+            mTextViewPlace = itemView.findViewById(R.id.textViewPlace);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -98,6 +98,7 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
 
         String sDate = new SimpleDateFormat("EEEE, dd MMM yyyy, HH:mm").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
 
+        holder.mTextViewDate.setText(sDate);
         holder.mTextViewPlace.setText(mCursor.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME));
     }
 

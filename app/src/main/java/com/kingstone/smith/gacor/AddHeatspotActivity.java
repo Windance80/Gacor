@@ -128,6 +128,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
 
                 if ( id > 0) {
                     Toast.makeText(AddHeatspotActivity.this, "Places added!", Toast.LENGTH_LONG).show();
+                    finish();
 //                    mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(AddHeatspotActivity.this, "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();

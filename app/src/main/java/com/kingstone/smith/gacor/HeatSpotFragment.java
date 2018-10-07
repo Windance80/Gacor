@@ -40,6 +40,8 @@ public class HeatSpotFragment extends Fragment implements
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    static final int ID_HEATSPOT_LOADER = 777;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -134,7 +136,7 @@ public class HeatSpotFragment extends Fragment implements
         mHeatSpotAdapter = new HeatSpotAdapter(getContext(), this);
         mRecyclerView.setAdapter(mHeatSpotAdapter);
 
-        getActivity().getSupportLoaderManager().initLoader(ID_PLACE_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(ID_HEATSPOT_LOADER, null, this);
 
         return view;
     }
@@ -192,7 +194,7 @@ public class HeatSpotFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case ID_PLACE_LOADER:
+            case ID_HEATSPOT_LOADER:
 
                 Uri uri = GacorContract.HeatspotEntry.CONTENT_URI;
                 String sordOrder = GacorContract.HeatspotEntry._ID + " ASC";
