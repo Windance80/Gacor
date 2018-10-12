@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
     static EditText mEditTextDate;
     EditText mEditTextLocation;
     Button mButtonSimpan;
+    FrameLayout mFrameLayout;
 
     static int mYear;
     static int mMonth;
@@ -56,6 +58,8 @@ public class AddHeatspotActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_heatspot);
+
+        mFrameLayout = findViewById(R.id.progressBarHolder);
 
         mCalendar = Calendar.getInstance();
         mYear = mCalendar.get(Calendar.YEAR);
@@ -93,6 +97,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     startActivityForResult(builder.build(AddHeatspotActivity.this), PLACE_PICKER_REQUEST);
+                    mFrameLayout.setVisibility(View.VISIBLE);
                 } catch (GooglePlayServicesRepairableException e) {
                     e.printStackTrace();
                 } catch (GooglePlayServicesNotAvailableException e) {
@@ -155,6 +160,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
 //                String toastMsg = String.format("Place: %s", place.getName());
 //                Toast.makeText(this, toastMsg + " " + place.getLatLng().toString(), Toast.LENGTH_LONG).show();
             }
+            mFrameLayout.setVisibility(View.INVISIBLE);
         }
     }
 
