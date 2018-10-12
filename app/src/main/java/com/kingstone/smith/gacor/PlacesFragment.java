@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -66,6 +67,7 @@ public class PlacesFragment extends Fragment implements
     private PlacesAdapter mAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private DividerItemDecoration mDividerItemDecoration;
+    private ProgressBar mProgressBarPlaces;
 
     final PlacePicker.IntentBuilder mPlacePickerIntentBuilder = new PlacePicker.IntentBuilder();
 
@@ -129,6 +131,8 @@ public class PlacesFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_places, container, false);
 
+        mProgressBarPlaces = view.findViewById(R.id.pb_places);
+
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +140,7 @@ public class PlacesFragment extends Fragment implements
 
                     try {
                         startActivityForResult(mPlacePickerIntentBuilder.build(getActivity()), PLACE_PICKER_REQUEST);
+                        mProgressBarPlaces.setVisibility(View.VISIBLE);
                     } catch (GooglePlayServicesRepairableException e) {
                         e.printStackTrace();
                     } catch (GooglePlayServicesNotAvailableException e) {
@@ -197,6 +202,7 @@ public class PlacesFragment extends Fragment implements
                 } else {
                     Toast.makeText(getContext(), "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();
                 }
+                mProgressBarPlaces.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -233,6 +239,7 @@ public class PlacesFragment extends Fragment implements
 
         switch (id) {
             case ID_PLACE_LOADER:
+                mProgressBarPlaces.setVisibility(View.VISIBLE);
 
                 Uri PlaceUri = GacorContract.PlaceEntry.CONTENT_URI;
 
@@ -253,6 +260,7 @@ public class PlacesFragment extends Fragment implements
     @Override
     public void onLoadFinished(@NonNull android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        mProgressBarPlaces.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -1,2 +1,3 @@
 working on:
--Implement Heatspot table to Heatspot Fragment to display data
+-Group the data from heatspot according to date and time
+-Add loading screen when add Places
