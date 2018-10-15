@@ -173,6 +173,7 @@ public class PlacesFragment extends Fragment implements
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
+            mFrameLayout.setVisibility(View.GONE);
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(getContext(), data);
 //                mEditTextLocation.setText(place.getName() + "\n" + place.getLatLng().toString());
@@ -199,7 +200,6 @@ public class PlacesFragment extends Fragment implements
                     Toast.makeText(getContext(), "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();
                 }
             }
-            mFrameLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -218,6 +218,7 @@ public class PlacesFragment extends Fragment implements
 
         try {
             startActivityForResult(mPlacePickerIntentBuilder.setLatLngBounds(latLngBounds).build(getActivity()), PLACE_PICKER_REQUEST);
+            mFrameLayout.setVisibility(View.VISIBLE);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
@@ -256,7 +257,7 @@ public class PlacesFragment extends Fragment implements
     @Override
     public void onLoadFinished(@NonNull android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
-        mFrameLayout.setVisibility(View.INVISIBLE);
+        mFrameLayout.setVisibility(View.GONE);
     }
 
     @Override

@@ -147,6 +147,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
+            mFrameLayout.setVisibility(View.GONE);
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
                 mEditTextLocation.setText(place.getName() + "\n" + place.getLatLng().toString());
@@ -160,7 +161,6 @@ public class AddHeatspotActivity extends AppCompatActivity {
 //                String toastMsg = String.format("Place: %s", place.getName());
 //                Toast.makeText(this, toastMsg + " " + place.getLatLng().toString(), Toast.LENGTH_LONG).show();
             }
-            mFrameLayout.setVisibility(View.INVISIBLE);
         }
     }
 
