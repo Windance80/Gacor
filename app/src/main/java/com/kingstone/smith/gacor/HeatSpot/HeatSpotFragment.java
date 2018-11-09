@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -234,8 +235,9 @@ public class HeatSpotFragment extends Fragment implements
                 long lDate = data.getLong(INDEX_HEATSPOT_DATE);
                 calendar.setTimeInMillis(lDate);
                 int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
 
-                modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME)));
+                modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME), day));
             } while (data.moveToNext());
 
             // put the list to Map
@@ -251,9 +253,10 @@ public class HeatSpotFragment extends Fragment implements
 
             // put the map to wrapper class for header and list
             for (int dayOfWeek : map.keySet()) {
-                ItemHeader header = new ItemHeader(dayOfWeek);
+                List<ModelData> list =  map.get(dayOfWeek);
+                ItemHeader header = new ItemHeader(dayOfWeek, list.get(0).getDay()); //to get the name of the day
                 items.add(header);
-                for (ModelData modelData1 : map.get(dayOfWeek)) {
+                for (ModelData modelData1 : list) {
                     ItemList item = new ItemList(modelData1);
                     items.add(item);
                 }

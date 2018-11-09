@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.kingstone.smith.gacor.R;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.List;
 
-public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSpotAdapterViewHolder> {
+public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private Cursor mCursor;
@@ -31,18 +32,24 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
         void onMenuItemClick();
     }
 
-    public class HeatSpotAdapterViewHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener, View.OnCreateContextMenuListener{
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewDay;
 
-        public TextView mTextViewDate;
-        public TextView mTextViewTime;
-        public TextView mTextViewPlace;
-
-        public HeatSpotAdapterViewHolder(View itemView) {
+        public HeaderViewHolder(View itemView) {
             super(itemView);
-            mTextViewDate = itemView.findViewById(R.id.textViewDate);
-            mTextViewTime = itemView.findViewById(R.id.textViewTime);
-            mTextViewPlace = itemView.findViewById(R.id.textViewPlace);
+            textViewDay = itemView.findViewById(R.id.textViewDay);
+        }
+    }
+
+    private class ListViewHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener, View.OnCreateContextMenuListener{
+        TextView textViewTime;
+        TextView textViewPlace;
+
+        public ListViewHolder(View itemView) {
+            super(itemView);
+            textViewTime = itemView.findViewById(R.id.textViewTime);
+            textViewPlace = itemView.findViewById(R.id.textViewPlace);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -65,7 +72,8 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mCursor.moveToPosition(getAdapterPosition());
+                mItems.get(getAdapterPosition());
+//                mCursor.moveToPosition(getAdapterPosition());
                 switch (item.getItemId()) {
                     case 1:
                         //Do stuff
@@ -89,29 +97,56 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
 
     @NonNull
     @Override
-    public HeatSpotAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.list_heatspot, parent, false);
-        HeatSpotAdapterViewHolder viewHolder = new HeatSpotAdapterViewHolder(v);
-
-        return viewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        switch (viewType) {
+            case ItemType.TYPE_HEADER: {
+                View itemView = inflater.inflate(R.layout.heatspot_header, parent, false);
+                return new HeaderViewHolder(itemView);
+            }
+            case ItemType.TYPE_LIST: {
+                View itemView = inflater.inflate(R.layout.heatspot_list, parent, false);
+                return new ListViewHolder(itemView);
+            }
+            default:
+                throw new IllegalStateException("unsupported item type");
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HeatSpotAdapterViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        int viewType = holder.getItemViewType();
+        switch (viewType) {
+            case ItemType.TYPE_HEADER: {
+                ItemHeader header = (ItemHeader) mItems.get(position);
+                HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
+                // your logic here
+                viewHolder.textViewDay.setText(header.getDay());
+                break;
+            }
+            case ItemType.TYPE_LIST: {
+                ItemList list = (ItemList) mItems.get(position);
+                ListViewHolder viewHolder = (ListViewHolder) holder;
+                // your logic here
+                viewHolder.textViewTime.setText(new SimpleDateFormat("HH:mm").format(list.getModelData().getDate()));
+                viewHolder.textViewPlace.setText(list.getModelData().getPlace());
+                break;
+            }
+            default:
+                throw new IllegalStateException("unsupported item type");
+        }
+    }
 
-        String sDate = new SimpleDateFormat("EEEE, dd MMM yyyy").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
-        String sTime = new SimpleDateFormat("HH:mm").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
-
-        holder.mTextViewDate.setText(sDate);
-        holder.mTextViewTime.setText(sTime);
-        holder.mTextViewPlace.setText(mCursor.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME));
+    @Override
+    public int getItemViewType(int position) {
+        return mItems.get(position).getType();
     }
 
     @Override
     public int getItemCount() {
-        if (null == mCursor) return 0;
-        return mCursor.getCount();
+//        if (null == mCursor) return 0;
+//        return mCursor.getCount();
+        return mItems.size();
     }
 
     public void swapCursor(Cursor newCursor, List<ItemType> itemTypes){
