@@ -1,5 +1,6 @@
-package com.kingstone.smith.gacor;
+package com.kingstone.smith.gacor.HeatSpot;
 
+import android.app.LauncherActivity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -20,9 +21,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 
-import static com.kingstone.smith.gacor.PlacesFragment.ID_PLACE_LOADER;
+import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -197,7 +205,7 @@ public class HeatSpotFragment extends Fragment implements
             case ID_HEATSPOT_LOADER:
 
                 Uri uri = GacorContract.HeatspotEntry.CONTENT_URI;
-                String sordOrder = GacorContract.HeatspotEntry._ID + " ASC";
+                String sordOrder = GacorContract.HeatspotEntry.COLUMN_DATE + " ASC";
 
                 return new CursorLoader(
                         getContext(),
@@ -216,11 +224,47 @@ public class HeatSpotFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        mHeatSpotAdapter.swapCursor(data);
+        List<ItemType> items = new ArrayList<>();
+
+        // pull data from the cursor to ModelData list
+        if (data.moveToFirst()) {
+            List<ModelData> modelData = new ArrayList<>();
+            do {
+                Calendar calendar = Calendar.getInstance();
+                long lDate = data.getLong(INDEX_HEATSPOT_DATE);
+                calendar.setTimeInMillis(lDate);
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+                modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME)));
+            } while (data.moveToNext());
+
+            // put the list to Map
+            Map<Integer, List<ModelData>> map = new TreeMap<>();
+            for (ModelData modelData1 : modelData) {
+                List<ModelData> value = map.get(modelData1.getDayOfWeek());
+                if (value == null) {
+                    value = new ArrayList<>();
+                    map.put(modelData1.getDayOfWeek(), value);
+                }
+                value.add(modelData1);
+            }
+
+            // put the map to wrapper class for header and list
+            for (int dayOfWeek : map.keySet()) {
+                ItemHeader header = new ItemHeader(dayOfWeek);
+                items.add(header);
+                for (ModelData modelData1 : map.get(dayOfWeek)) {
+                    ItemList item = new ItemList(modelData1);
+                    items.add(item);
+                }
+            }
+        }
+
+        mHeatSpotAdapter.swapCursor(data, items);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mHeatSpotAdapter.swapCursor(null);
+        mHeatSpotAdapter.swapCursor(null, null);
     }
 }

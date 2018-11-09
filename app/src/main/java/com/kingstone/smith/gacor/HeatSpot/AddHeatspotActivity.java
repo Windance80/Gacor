@@ -1,4 +1,4 @@
-package com.kingstone.smith.gacor;
+package com.kingstone.smith.gacor.HeatSpot;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -24,6 +24,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 
 import java.text.SimpleDateFormat;

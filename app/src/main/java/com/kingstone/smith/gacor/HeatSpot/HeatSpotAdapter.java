@@ -1,4 +1,4 @@
-package com.kingstone.smith.gacor;
+package com.kingstone.smith.gacor.HeatSpot;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,13 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kingstone.smith.gacor.R;
+
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSpotAdapterViewHolder> {
 
     private Context mContext;
     private Cursor mCursor;
+    private List<ItemType> mItems = Collections.emptyList();
 
     private final HeatSpotAdapterOnClickHandler mClickHandler;
 
@@ -96,9 +100,11 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
     public void onBindViewHolder(@NonNull HeatSpotAdapterViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        String sDate = new SimpleDateFormat("EEEE, dd MMM yyyy, HH:mm").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
+        String sDate = new SimpleDateFormat("EEEE, dd MMM yyyy").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
+        String sTime = new SimpleDateFormat("HH:mm").format(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
 
         holder.mTextViewDate.setText(sDate);
+        holder.mTextViewTime.setText(sTime);
         holder.mTextViewPlace.setText(mCursor.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME));
     }
 
@@ -108,8 +114,9 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<HeatSpotAdapter.HeatSp
         return mCursor.getCount();
     }
 
-    void swapCursor(Cursor newCursor){
+    public void swapCursor(Cursor newCursor, List<ItemType> itemTypes){
         mCursor = newCursor;
+        mItems = itemTypes;
         notifyDataSetChanged();
     }
 }

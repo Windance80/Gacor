@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddHeatspotActivity"
+        <activity android:name=".HeatSpot.AddHeatspotActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity">
