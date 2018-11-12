@@ -27,6 +27,9 @@ import com.kingstone.smith.gacor.data.GacorContract;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -240,7 +243,7 @@ public class HeatSpotFragment extends Fragment implements
                 modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME), day));
             } while (data.moveToNext());
 
-            // put the list to Map
+            // put the ModelData list to TreeMap with dayOfWeek as key
             Map<Integer, List<ModelData>> map = new TreeMap<>();
             for (ModelData modelData1 : modelData) {
                 List<ModelData> value = map.get(modelData1.getDayOfWeek());
@@ -256,6 +259,15 @@ public class HeatSpotFragment extends Fragment implements
                 List<ModelData> list =  map.get(dayOfWeek);
                 ItemHeader header = new ItemHeader(dayOfWeek, list.get(0).getDay()); //to get the name of the day
                 items.add(header);
+
+                // sort the ModelData with time
+                Collections.sort(list, new Comparator<ModelData>() {
+                    @Override
+                    public int compare(ModelData modelData, ModelData t1) {
+                        return modelData.getTime().compareTo(t1.getTime());
+                    }
+                });
+
                 for (ModelData modelData1 : list) {
                     ItemList item = new ItemList(modelData1);
                     items.add(item);
