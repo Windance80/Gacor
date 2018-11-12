@@ -171,6 +171,7 @@ public class GacorFragment extends Fragment implements
     @Override
     public void onLoadFinished(@NonNull final android.support.v4.content.Loader<Cursor> loader, final Cursor data) {
         if (data.moveToFirst()) {
+            //request device location permission
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_FINE);
@@ -179,6 +180,7 @@ public class GacorFragment extends Fragment implements
                 mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
+                        // calculate distance
                         if (location != null) {
                             mGacorArrayList.clear();
 
