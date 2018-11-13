@@ -2,6 +2,7 @@ package com.kingstone.smith.gacor;
 
 import android.Manifest;
 import android.app.Activity;
+import android.database.StaleDataException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -30,6 +31,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 import com.kingstone.smith.gacor.data.GacorContract;
 
 import java.util.ArrayList;
@@ -67,6 +69,8 @@ public class GacorFragment extends Fragment implements
 
     private TextView mTextViewDistancce;
     private OnFragmentInteractionListener mListener;
+
+    public static final int ID_GACOR_LOADER = 14;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -129,7 +133,7 @@ public class GacorFragment extends Fragment implements
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
 
-        getActivity().getSupportLoaderManager().initLoader(PlacesFragment.ID_PLACE_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(ID_GACOR_LOADER, null, this);
 
         return view;
     }
@@ -152,14 +156,14 @@ public class GacorFragment extends Fragment implements
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case PlacesFragment.ID_PLACE_LOADER:
-                Uri queryUri = GacorContract.PlaceEntry.CONTENT_URI;
-                String sortOrder = GacorContract.PlaceEntry._ID + " ASC";
+            case ID_GACOR_LOADER:
+                Uri queryUri = GacorContract.HeatspotEntry.CONTENT_URI;
+                String sortOrder = GacorContract.HeatspotEntry._ID + " ASC";
 
                 return new CursorLoader(mContext,
                         queryUri,
-                        PlacesFragment.PLACES_PROJECTION,
-                        null,
+                        HeatSpotFragment.HEATSPOT_PROJECTION,
+                        GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL",
                         null,
                         sortOrder);
 
@@ -177,31 +181,37 @@ public class GacorFragment extends Fragment implements
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_FINE);
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_COARSE);
             } else {
+
                 mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // calculate distance
-                        if (location != null) {
+                        if (location != null ) {
+
                             mGacorArrayList.clear();
 
-                            Location location1 = new Location("pointA");
-                            location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
-                            location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));
+                            try {
+                                Location location1 = new Location("pointA");
+                                location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
+                                location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
 
-                            double distance = location.distanceTo(location1);
+                                double distance = location.distanceTo(location1);
 
-                            mTextViewDistancce.setText(
-                                    data.getString(PlacesFragment.INDEX_PLACE_NAME) + " " +
-                                            String.valueOf(((int) (distance / 100.0)) / 10.0) + " Km");
+                                mTextViewDistancce.setText(
+                                        data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME) + " " +
+                                                String.valueOf(((int) (distance / 100.0)) / 10.0) + " Km");
 
-                            mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+                                mGacorArrayList.add(new Gacor(data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
 
-                            while (data.moveToNext()) {
-                                location1.setLatitude(data.getDouble(PlacesFragment.INDEX_PLACE_LAT));
-                                location1.setLongitude(data.getDouble(PlacesFragment.INDEX_PLACE_LANG));
+                                while (data.moveToNext()) {
+                                    location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
+                                    location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
 
-                                distance = location.distanceTo(location1);
-                                mGacorArrayList.add(new Gacor(data.getString(PlacesFragment.INDEX_PLACE_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+                                    distance = location.distanceTo(location1);
+                                    mGacorArrayList.add(new Gacor(data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                             Collections.sort(mGacorArrayList, new Comparator<Gacor>() {

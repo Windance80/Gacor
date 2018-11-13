@@ -1,2 +1,2 @@
 working on:
--update Gacor fragment so that it's using heatspot data to calculate route
+-update Gacor fragment so that it's using heatspot that has been updated with allowed null date calculate route

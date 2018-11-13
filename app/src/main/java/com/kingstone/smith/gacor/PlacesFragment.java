@@ -28,6 +28,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 import com.kingstone.smith.gacor.data.GacorContract;
 
 import java.util.ArrayList;
@@ -67,19 +68,19 @@ public class PlacesFragment extends Fragment implements
 
     final PlacePicker.IntentBuilder mPlacePickerIntentBuilder = new PlacePicker.IntentBuilder();
 
-    public static final String[] PLACES_PROJECTION = {
-            GacorContract.PlaceEntry._ID,
-            GacorContract.PlaceEntry.COLUMN_PLACE_NAME,
-            GacorContract.PlaceEntry.COLUMN_PLACE_DETAIL,
-            GacorContract.PlaceEntry.COLUMN_PLACE_LAT,
-            GacorContract.PlaceEntry.COLUMN_PLACE_LANG
-    };
-
-    public static final int INDEX_PLACE_ID = 0;
-    public static final int INDEX_PLACE_NAME = 1;
-    public static final int INDEX_PLACE_DETAIL = 2;
-    public static final int INDEX_PLACE_LAT = 3;
-    public static final int INDEX_PLACE_LANG = 4;
+//    public static final String[] PLACES_PROJECTION = {
+//            GacorContract.PlaceEntry._ID,
+//            GacorContract.PlaceEntry.COLUMN_PLACE_NAME,
+//            GacorContract.PlaceEntry.COLUMN_PLACE_DETAIL,
+//            GacorContract.PlaceEntry.COLUMN_PLACE_LAT,
+//            GacorContract.PlaceEntry.COLUMN_PLACE_LANG
+//    };
+//
+//    public static final int INDEX_PLACE_ID = 0;
+//    public static final int INDEX_PLACE_NAME = 1;
+//    public static final int INDEX_PLACE_DETAIL = 2;
+//    public static final int INDEX_PLACE_LAT = 3;
+//    public static final int INDEX_PLACE_LANG = 4;
 
     static final int ID_PLACE_LOADER = 44;
 
@@ -176,25 +177,20 @@ public class PlacesFragment extends Fragment implements
             mFrameLayout.setVisibility(View.GONE);
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(getContext(), data);
-//                mEditTextLocation.setText(place.getName() + "\n" + place.getLatLng().toString());
                 double lat = ((double)((int)(place.getLatLng().latitude * 1000000.0)))/1000000.0;
                 double lng = ((double)((int)(place.getLatLng().longitude * 1000000.0)))/1000000.0;
-//                mPlaces.add(new Places(
-//                        place.getName().toString(),
-//                        place.getAddress().toString(),
-//                        lat,
-//                        lng));
 
-                // insert to db
+                // insert to table heatspot with null as date
                 ContentValues values = new ContentValues();
-                values.put(GacorContract.PlaceEntry.COLUMN_PLACE_NAME, place.getName().toString());
-                values.put(GacorContract.PlaceEntry.COLUMN_PLACE_DETAIL, place.getAddress().toString());
-                values.put(GacorContract.PlaceEntry.COLUMN_PLACE_LAT, lat);
-                values.put(GacorContract.PlaceEntry.COLUMN_PLACE_LANG, lng);
-                Uri newUri = getContext().getContentResolver().insert(GacorContract.PlaceEntry.CONTENT_URI, values);
-                long id = ContentUris.parseId(newUri);
+                values.put(GacorContract.HeatspotEntry.COLUMN_NAME, place.getName().toString());
+                values.put(GacorContract.HeatspotEntry.COLUMN_DETAIL, place.getAddress().toString());
+                values.put(GacorContract.HeatspotEntry.COLUMN_LAT, lat);
+                values.put(GacorContract.HeatspotEntry.COLUMN_LANG, lng);
+
+                Uri heatSpotUri = getContext().getContentResolver().insert(GacorContract.HeatspotEntry.CONTENT_URI, values);
+                long id = ContentUris.parseId(heatSpotUri);
                 if ( id > 0) {
-                    Toast.makeText(getContext(), "Places added!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "HeatSpot Places added!", Toast.LENGTH_LONG).show();
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();
@@ -205,9 +201,9 @@ public class PlacesFragment extends Fragment implements
 
     @Override
     public void onMenuItemClick(long id) {
-        Uri uri = ContentUris.withAppendedId(GacorContract.PlaceEntry.CONTENT_URI, id);
+        Uri heatspotUri = ContentUris.withAppendedId(GacorContract.HeatspotEntry.CONTENT_URI, id);
 
-        getActivity().getContentResolver().delete(uri, null, null);
+        getActivity().getContentResolver().delete(heatspotUri, null, null);
     }
 
     @Override
@@ -238,16 +234,17 @@ public class PlacesFragment extends Fragment implements
             case ID_PLACE_LOADER:
                 mFrameLayout.setVisibility(View.VISIBLE);
 
-                Uri PlaceUri = GacorContract.PlaceEntry.CONTENT_URI;
+                Uri uri = GacorContract.HeatspotEntry.CONTENT_URI;
+                String sordOrder = GacorContract.HeatspotEntry.COLUMN_DATE + " ASC";
 
-                String sortOrder = GacorContract.PlaceEntry._ID + " ASC";
-
-                return new CursorLoader(getContext(),
-                        PlaceUri,
-                        PLACES_PROJECTION,
+                return new CursorLoader(
+                        getContext(),
+                        uri,
+                        HeatSpotFragment.HEATSPOT_PROJECTION,
+                        GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL",
                         null,
-                        null,
-                        sortOrder);
+                        sordOrder
+                );
 
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);

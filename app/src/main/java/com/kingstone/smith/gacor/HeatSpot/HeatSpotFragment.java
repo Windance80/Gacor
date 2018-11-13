@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kingstone.smith.gacor.GacorFragment;
 import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 
@@ -215,7 +216,7 @@ public class HeatSpotFragment extends Fragment implements
                         getContext(),
                         uri,
                         HEATSPOT_PROJECTION,
-                        null,
+                        GacorContract.HeatspotEntry.COLUMN_DATE + " IS NOT NULL",
                         null,
                         sordOrder
                         );
@@ -275,11 +276,11 @@ public class HeatSpotFragment extends Fragment implements
             }
         }
 
-        mHeatSpotAdapter.swapCursor(data, items);
+        mHeatSpotAdapter.swapCursor(items);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mHeatSpotAdapter.swapCursor(null, null);
+        mHeatSpotAdapter.swapCursor(null);
     }
 }

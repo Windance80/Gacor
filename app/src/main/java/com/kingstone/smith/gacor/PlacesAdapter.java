@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 import com.kingstone.smith.gacor.data.GacorContract;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdapterViewHolder> {
@@ -51,7 +52,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
         @Override
         public void onClick(View view) {
             mCursor.moveToPosition(getAdapterPosition());
-            mClickHandler.onClick(mCursor.getDouble(PlacesFragment.INDEX_PLACE_LAT), mCursor.getDouble(PlacesFragment.INDEX_PLACE_LANG));
+            mClickHandler.onClick(mCursor.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT), mCursor.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
         }
 
         @Override
@@ -61,7 +62,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
             Edit.setOnMenuItemClickListener(onEditMenu);
             Delete.setOnMenuItemClickListener(onEditMenu);
         }
-
 
         //ADD AN ONMENUITEM LISTENER TO EXECUTE COMMANDS ONCLICK OF CONTEXT MENU TASK
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
@@ -74,7 +74,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
                         break;
 
                     case 2: // delete
-                        mClickHandler.onMenuItemClick(mCursor.getLong(PlacesFragment.INDEX_PLACE_ID));
+                        mClickHandler.onMenuItemClick(mCursor.getLong(HeatSpotFragment.INDEX_HEATSPOT_ID));
 
                         break;
                 }
@@ -85,7 +85,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
     public PlacesAdapter(Context context, PlacesAdapterOnClickHandler clickHandler) {
         mContext = context;
-//        mPlaces = places;
         mClickHandler = clickHandler;
     }
 
@@ -105,19 +104,12 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
         mCursor.moveToPosition(position);
 
-        holder.mTextViewName.setText(mCursor.getString(PlacesFragment.INDEX_PLACE_NAME));
-        holder.mTextViewDetail.setText(mCursor.getString(PlacesFragment.INDEX_PLACE_DETAIL));
+        holder.mTextViewName.setText(mCursor.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME));
+        holder.mTextViewDetail.setText(mCursor.getString(HeatSpotFragment.INDEX_HEATSPOT_DETAIL));
         holder.mTextViewLatLong.setText(
                 "LatLong: " +
-                String.valueOf(mCursor.getDouble(PlacesFragment.INDEX_PLACE_LAT)) + ", " +
-                String.valueOf(mCursor.getDouble(PlacesFragment.INDEX_PLACE_LANG)));
-
-//        holder.mTextViewName.setText(mPlaces.get(position).getName());
-//        hold  er.mTextViewDetail.setText(mPlaces.get(position).getDetail());
-//        holder.mTextViewLatLong.setText(
-//                "LatLong: " +
-//                String.valueOf(mPlaces.get(position).getLattitude()) + ", " +
-//                String.valueOf(mPlaces.get(position).getLongitude()));
+                String.valueOf(mCursor.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT)) + ", " +
+                String.valueOf(mCursor.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG)));
     }
 
     @Override

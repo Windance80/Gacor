@@ -22,7 +22,6 @@ import java.util.List;
 public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private Cursor mCursor;
     private List<ItemType> mItems = Collections.emptyList();
 
     private final HeatSpotAdapterOnClickHandler mClickHandler;
@@ -149,8 +148,7 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return mItems.size();
     }
 
-    public void swapCursor(Cursor newCursor, List<ItemType> itemTypes){
-        mCursor = newCursor;
+    public void swapCursor(List<ItemType> itemTypes){
         mItems = itemTypes;
         notifyDataSetChanged();
     }

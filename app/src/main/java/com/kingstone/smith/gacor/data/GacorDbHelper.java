@@ -14,7 +14,7 @@ public class GacorDbHelper extends SQLiteOpenHelper {
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     /**
      * Constructs a new instance of {@link GacorDbHelper}.
@@ -40,7 +40,7 @@ public class GacorDbHelper extends SQLiteOpenHelper {
 
         String SQL_CREATE_HEATSPOT_TABLE =  "CREATE TABLE " + GacorContract.HeatspotEntry.TABLE_NAME + " ("
                 + GacorContract.HeatspotEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + GacorContract.HeatspotEntry.COLUMN_DATE + " INTEGER NOT NULL, "
+                + GacorContract.HeatspotEntry.COLUMN_DATE + " INTEGER, "
                 + GacorContract.HeatspotEntry.COLUMN_NAME + " TEXT NOT NULL, "
                 + GacorContract.HeatspotEntry.COLUMN_DETAIL + " TEXT, "
                 + GacorContract.HeatspotEntry.COLUMN_LAT + " REAL NOT NULL, "
