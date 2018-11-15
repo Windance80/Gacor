@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.kingstone.smith.gacor.Gacor.GacorFragment;
 import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 
 public class MainActivity extends AppCompatActivity implements

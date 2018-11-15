@@ -1,12 +1,10 @@
-package com.kingstone.smith.gacor;
+package com.kingstone.smith.gacor.Gacor;
 
 import android.Manifest;
 import android.app.Activity;
-import android.database.StaleDataException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
@@ -19,9 +17,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -29,9 +25,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
+import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 
 import java.util.ArrayList;

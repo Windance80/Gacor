@@ -1,2 +1,9 @@
 working on:
 -update Gacor fragment so that it's using heatspot that has been updated with allowed null date calculate route
+-implement click handler in heatspot listview
+-remove edit context menu
+-implement click handler in GacorFragment
+-implement loading screen in GacorFragment
+
+design:
+-Update the theme to black and green

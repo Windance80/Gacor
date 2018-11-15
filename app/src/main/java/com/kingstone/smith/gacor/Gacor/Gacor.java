@@ -1,4 +1,4 @@
-package com.kingstone.smith.gacor;
+package com.kingstone.smith.gacor.Gacor;
 
 import android.support.annotation.NonNull;
 

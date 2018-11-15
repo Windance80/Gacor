@@ -57,9 +57,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesAdap
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem Edit = contextMenu.add(Menu.NONE, 1, 1, "Edit");
+//            MenuItem Edit = contextMenu.add(Menu.NONE, 1, 1, "Edit");
             MenuItem Delete = contextMenu.add(Menu.NONE, 2, 2, "Delete");
-            Edit.setOnMenuItemClickListener(onEditMenu);
+//            Edit.setOnMenuItemClickListener(onEditMenu);
             Delete.setOnMenuItemClickListener(onEditMenu);
         }
 

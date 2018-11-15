@@ -10,8 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.kingstone.smith.gacor.Gacor;
-
 import static com.kingstone.smith.gacor.data.GacorDbHelper.LOG_TAG;
 
 public class GacorProvider extends ContentProvider {
