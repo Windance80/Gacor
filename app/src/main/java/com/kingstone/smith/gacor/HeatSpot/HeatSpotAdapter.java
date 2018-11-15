@@ -28,7 +28,7 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface HeatSpotAdapterOnClickHandler {
         void onClick();
-        void onMenuItemClick();
+        void onMenuItemClick(long id);
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -71,7 +71,7 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mItems.get(getAdapterPosition());
+
 //                mCursor.moveToPosition(getAdapterPosition());
                 switch (item.getItemId()) {
                     case 1:
@@ -79,7 +79,7 @@ public class HeatSpotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         break;
 
                     case 2: // delete
-                        mClickHandler.onMenuItemClick();
+                        mClickHandler.onMenuItemClick(((ItemList) mItems.get(getAdapterPosition())).getModelData().getId());
 
                         break;
                 }

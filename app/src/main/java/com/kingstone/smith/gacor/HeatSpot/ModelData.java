@@ -11,12 +11,14 @@ public class ModelData {
     private String place;
     private String day;
     private String time;
+    private long id;
 
-    public ModelData(int dayOfWeek, long date, String place, String day) {
+    public ModelData(int dayOfWeek, long date, String place, String day, long id) {
         this.dayOfWeek = dayOfWeek;
         this.date = date;
         this.place = place;
         this.day = day;
+        this.id = id;
         time = new SimpleDateFormat("HH:mm").format(date);
     }
 
@@ -39,4 +41,6 @@ public class ModelData {
     public String getPlace() {
         return place;
     }
+
+    public long getId() { return id;}
 }

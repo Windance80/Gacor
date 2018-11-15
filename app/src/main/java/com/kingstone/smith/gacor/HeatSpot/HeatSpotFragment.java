@@ -1,5 +1,6 @@
 package com.kingstone.smith.gacor.HeatSpot;
 
+import android.content.ContentUris;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -155,8 +156,10 @@ public class HeatSpotFragment extends Fragment implements
     }
 
     @Override
-    public void onMenuItemClick() {
+    public void onMenuItemClick(long id) {
+        Uri heatspotUri = ContentUris.withAppendedId(GacorContract.HeatspotEntry.CONTENT_URI, id);
 
+        getActivity().getContentResolver().delete(heatspotUri, null, null);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -236,7 +239,7 @@ public class HeatSpotFragment extends Fragment implements
                 int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
 
-                modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME), day));
+                modelData.add(new ModelData(dayOfWeek, lDate, data.getString(INDEX_HEATSPOT_NAME), day, data.getLong(INDEX_HEATSPOT_ID)));
             } while (data.moveToNext());
 
             // put the ModelData list to TreeMap with dayOfWeek as key
