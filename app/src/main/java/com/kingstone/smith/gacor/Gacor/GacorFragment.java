@@ -30,7 +30,9 @@ import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -63,7 +65,6 @@ public class GacorFragment extends Fragment implements
     private static final int REQUEST_CODE_COARSE = 777;
     private static final int REQUEST_CODE_FINE = 666;
 
-    private TextView mTextViewDistancce;
     private OnFragmentInteractionListener mListener;
 
     public static final int ID_GACOR_LOADER = 14;
@@ -109,7 +110,6 @@ public class GacorFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gacor, container, false);
-        mTextViewDistancce = view.findViewById(R.id.textVIewDistance);
         mRecyclerView = view.findViewById(R.id.recyclerViewGacor);
 
         // use this setting to improve performance if you know that changes
@@ -155,11 +155,14 @@ public class GacorFragment extends Fragment implements
             case ID_GACOR_LOADER:
                 Uri queryUri = GacorContract.HeatspotEntry.CONTENT_URI;
                 String sortOrder = GacorContract.HeatspotEntry._ID + " ASC";
-
+//                String selection = GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL";
+//                String selection = GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL OR strftime('%w', " + GacorContract.HeatspotEntry.COLUMN_DATE + ") = '1'";
+//                String selection = GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL OR strftime('%w', " + GacorContract.HeatspotEntry.COLUMN_DATE + ") = '" + Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + "'";
+                // Query all data and filter it later in Cursor onLoadFinished
                 return new CursorLoader(mContext,
                         queryUri,
                         HeatSpotFragment.HEATSPOT_PROJECTION,
-                        GacorContract.HeatspotEntry.COLUMN_DATE + " IS NULL",
+                        null,
                         null,
                         sortOrder);
 
@@ -193,18 +196,48 @@ public class GacorFragment extends Fragment implements
 
                                 double distance = location.distanceTo(location1);
 
-                                mTextViewDistancce.setText(
-                                        data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME) + " " +
-                                                String.valueOf(((int) (distance / 100.0)) / 10.0) + " Km");
+                                Calendar calendar = Calendar.getInstance();
+                                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                                long date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
+                                calendar.setTimeInMillis(date);
 
-                                mGacorArrayList.add(new Gacor(data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+                                // Filter the data so that it display only data from today DAY_OF_WEEK or if date is null
+                                if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek || date == 0) {
+                                    String time = "";
+                                    if (date != 0) {
+                                        time = new SimpleDateFormat("HH:mm").format(data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
+                                    }
+
+                                    mGacorArrayList.add(
+                                            new Gacor(
+                                                    data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
+                                                    String.valueOf(((int) (distance / 100.0)) / 10.0),
+                                                    time
+                                            )
+                                    );
+                                }
 
                                 while (data.moveToNext()) {
                                     location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
                                     location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
 
                                     distance = location.distanceTo(location1);
-                                    mGacorArrayList.add(new Gacor(data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME), String.valueOf(((int) (distance / 100.0)) / 10.0)));
+                                    date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
+                                    calendar.setTimeInMillis(date);
+
+                                    if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek || date == 0) {
+                                        String time = "";
+                                        if (date != 0) {
+                                            time = new SimpleDateFormat("HH:mm").format(data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
+                                        }
+                                        mGacorArrayList.add(
+                                                new Gacor(
+                                                        data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
+                                                        String.valueOf(((int) (distance / 100.0)) / 10.0),
+                                                        time
+                                                )
+                                        );
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -213,8 +246,8 @@ public class GacorFragment extends Fragment implements
                             Collections.sort(mGacorArrayList, new Comparator<Gacor>() {
                                 @Override
                                 public int compare(Gacor gacor, Gacor t1) {
-                                    String distance1 = gacor.getmDistance();
-                                    String distance2 = t1.getmDistance();
+                                    String distance1 = gacor.getDistance();
+                                    String distance2 = t1.getDistance();
                                     return distance1.compareTo(distance2);
                                 }
                             });

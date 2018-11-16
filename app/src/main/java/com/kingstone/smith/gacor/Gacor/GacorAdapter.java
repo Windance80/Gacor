@@ -42,8 +42,9 @@ public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapter
 
     @Override
     public void onBindViewHolder(@NonNull GacorAdapterViewHolder holder, int position) {
-        holder.mTextViewPlace.setText(mGacor.get(position).getmPlace());
-        holder.mTextViewDistance.setText(mGacor.get(position).getmDistance());
+        holder.mTextViewPlace.setText(mGacor.get(position).getPlace());
+        holder.mTextViewDistance.setText(mGacor.get(position).getDistance());
+        holder.mTextViewTime.setText(mGacor.get(position).getTime());
     }
 
     @Override
@@ -54,11 +55,13 @@ public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapter
     public class GacorAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView mTextViewPlace;
         TextView mTextViewDistance;
+        TextView mTextViewTime;
 
         public GacorAdapterViewHolder(View itemView) {
             super(itemView);
             mTextViewPlace = itemView.findViewById(R.id.textViewPlace);
             mTextViewDistance = itemView.findViewById(R.id.textViewDistance);
+            mTextViewTime = itemView.findViewById(R.id.textViewTime);
             itemView.setOnClickListener(this);
         }
 

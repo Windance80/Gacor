@@ -12,6 +12,7 @@
         android:scrollbars="vertical" />
 
     <android.support.design.widget.FloatingActionButton
+        android:stateListAnimator="@null"
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

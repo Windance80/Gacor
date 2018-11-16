@@ -1,8 +1,7 @@
-working on:
+CODE:
 -update Gacor fragment so that it's using heatspot that has been updated with allowed null date calculate route
 -implement click handler in GacorFragment
--implement loading screen in GacorFragment
--Fix loading screen to appear and disable screen
+-Fix loading screen to cover all screen
 
-design:
+DESIGN:
 -Update the theme to black and green

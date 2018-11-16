@@ -1,32 +1,23 @@
 package com.kingstone.smith.gacor.Gacor;
 
-import android.support.annotation.NonNull;
-
 public class Gacor {
 
-    private String mPlace;
-    private String mDistance;
+    private String place;
+    private String distance;
+    private String time;
 
-    public Gacor(String place, String distance) {
+    public Gacor(String place, String distance, String time) {
         super();
-        mPlace = place;
-        mDistance = distance;
+        this.place = place;
+        this.distance = distance;
+        this.time = time;
     }
 
-    public String getmPlace() {
-        return mPlace;
+    public String getPlace() {
+        return place;
     }
-
-    public void setmPlace(String mPlace) {
-        this.mPlace = mPlace;
+    public String getDistance() {
+        return distance;
     }
-
-    public String getmDistance() {
-        return mDistance;
-    }
-
-    public void setmDistance(String mDistance) {
-        this.mDistance = mDistance;
-    }
-
+    public String getTime() { return time; }
 }
