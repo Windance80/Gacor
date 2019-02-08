@@ -173,63 +173,42 @@ public class GacorFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(@NonNull final android.support.v4.content.Loader<Cursor> loader, final Cursor data) {
-        if (data.moveToFirst()) {
-            //request device location permission
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_FINE);
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_COARSE);
-            } else {
+        if (isAdded()) {
+            if (data.moveToFirst()) {
+                //request device location permission
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_FINE);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_COARSE);
+                } else {
 
-                mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // calculate distance
-                        if (location != null ) {
+                    mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // calculate distance
+                            if (location != null ) {
 
-                            mGacorArrayList.clear();
+                                mGacorArrayList.clear();
 
-                            try {
-                                Location location1 = new Location("pointA");
-                                location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
-                                location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
-
-                                double distance = location.distanceTo(location1);
-
-                                Calendar calendar = Calendar.getInstance();
-                                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                                long date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
-                                calendar.setTimeInMillis(date);
-
-                                // Filter the data so that it display only data from today DAY_OF_WEEK or if date is null
-                                if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek || date == 0) {
-                                    String time = "";
-                                    if (date != 0) {
-                                        time = new SimpleDateFormat("HH:mm").format(data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
-                                    }
-
-                                    mGacorArrayList.add(
-                                            new Gacor(
-                                                    data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
-                                                    String.valueOf(((int) (distance / 100.0)) / 10.0),
-                                                    time
-                                            )
-                                    );
-                                }
-
-                                while (data.moveToNext()) {
+                                try {
+                                    Location location1 = new Location("pointA");
                                     location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
                                     location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
 
-                                    distance = location.distanceTo(location1);
-                                    date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
+                                    double distance = location.distanceTo(location1);
+
+                                    Calendar calendar = Calendar.getInstance();
+                                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                                    long date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
                                     calendar.setTimeInMillis(date);
 
+                                    // Filter the data so that it display only data from today DAY_OF_WEEK or if date is null
                                     if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek || date == 0) {
                                         String time = "";
                                         if (date != 0) {
                                             time = new SimpleDateFormat("HH:mm").format(data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
                                         }
+
                                         mGacorArrayList.add(
                                                 new Gacor(
                                                         data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
@@ -238,24 +217,47 @@ public class GacorFragment extends Fragment implements
                                                 )
                                         );
                                     }
+
+                                    while (data.moveToNext()) {
+                                        location1.setLatitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LAT));
+                                        location1.setLongitude(data.getDouble(HeatSpotFragment.INDEX_HEATSPOT_LANG));
+
+                                        distance = location.distanceTo(location1);
+                                        date = data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE);
+                                        calendar.setTimeInMillis(date);
+
+                                        if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek || date == 0) {
+                                            String time = "";
+                                            if (date != 0) {
+                                                time = new SimpleDateFormat("HH:mm").format(data.getLong(HeatSpotFragment.INDEX_HEATSPOT_DATE));
+                                            }
+                                            mGacorArrayList.add(
+                                                    new Gacor(
+                                                            data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
+                                                            String.valueOf(((int) (distance / 100.0)) / 10.0),
+                                                            time
+                                                    )
+                                            );
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+
+                                Collections.sort(mGacorArrayList, new Comparator<Gacor>() {
+                                    @Override
+                                    public int compare(Gacor gacor, Gacor t1) {
+                                        String distance1 = gacor.getDistance();
+                                        String distance2 = t1.getDistance();
+                                        return distance1.compareTo(distance2);
+                                    }
+                                });
+
+                                mAdapter.notifyDataSetChanged();
                             }
-
-                            Collections.sort(mGacorArrayList, new Comparator<Gacor>() {
-                                @Override
-                                public int compare(Gacor gacor, Gacor t1) {
-                                    String distance1 = gacor.getDistance();
-                                    String distance2 = t1.getDistance();
-                                    return distance1.compareTo(distance2);
-                                }
-                            });
-
-                            mAdapter.notifyDataSetChanged();
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }
