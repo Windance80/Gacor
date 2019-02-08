@@ -190,7 +190,7 @@ public class PlacesFragment extends Fragment implements
                 Uri heatSpotUri = getContext().getContentResolver().insert(GacorContract.HeatspotEntry.CONTENT_URI, values);
                 long id = ContentUris.parseId(heatSpotUri);
                 if ( id > 0) {
-                    Toast.makeText(getContext(), "HeatSpot Places added!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Places added!", Toast.LENGTH_LONG).show();
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Insert failed! InsertErrorCode " + String.valueOf(id), Toast.LENGTH_LONG).show();

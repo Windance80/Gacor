@@ -133,7 +133,7 @@ public class AddHeatspotActivity extends AppCompatActivity {
                 }
 
                 if ( id > 0) {
-                    Toast.makeText(AddHeatspotActivity.this, "Places added!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddHeatspotActivity.this, "Heatspot added!", Toast.LENGTH_LONG).show();
                     finish();
 //                    mAdapter.notifyDataSetChanged();
                 } else {

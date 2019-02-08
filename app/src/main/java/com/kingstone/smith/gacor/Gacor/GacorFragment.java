@@ -2,6 +2,7 @@ package com.kingstone.smith.gacor.Gacor;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -20,11 +21,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.kingstone.smith.gacor.HeatSpot.HeatSpotFragment;
 import com.kingstone.smith.gacor.R;
@@ -71,6 +78,10 @@ public class GacorFragment extends Fragment implements
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+//    int PLACE_PICKER_REQUEST = 1;
+//    final PlacePicker.IntentBuilder mPlacePickerIntentBuilder = new PlacePicker.IntentBuilder();
+    private FrameLayout mFrameLayout;
+
     public GacorFragment() {
         // Required empty public constructor
     }
@@ -111,6 +122,8 @@ public class GacorFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gacor, container, false);
         mRecyclerView = view.findViewById(R.id.recyclerViewGacor);
+
+        mFrameLayout = view.findViewById(R.id.progressBarHolder);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -213,7 +226,9 @@ public class GacorFragment extends Fragment implements
                                                 new Gacor(
                                                         data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
                                                         String.valueOf(((int) (distance / 100.0)) / 10.0),
-                                                        time
+                                                        time,
+                                                        data.getLong(HeatSpotFragment.INDEX_HEATSPOT_LAT),
+                                                        data.getLong(HeatSpotFragment.INDEX_HEATSPOT_LANG)
                                                 )
                                         );
                                     }
@@ -235,7 +250,9 @@ public class GacorFragment extends Fragment implements
                                                     new Gacor(
                                                             data.getString(HeatSpotFragment.INDEX_HEATSPOT_NAME),
                                                             String.valueOf(((int) (distance / 100.0)) / 10.0),
-                                                            time
+                                                            time,
+                                                            data.getLong(HeatSpotFragment.INDEX_HEATSPOT_LAT),
+                                                            data.getLong(HeatSpotFragment.INDEX_HEATSPOT_LANG)
                                                     )
                                             );
                                         }
@@ -266,8 +283,36 @@ public class GacorFragment extends Fragment implements
     public void onLoaderReset(@NonNull android.support.v4.content.Loader<Cursor> loader) {
     }
 
+    // Click event for GacorAdapter when clicked
     @Override
-    public void onClick() {
+    public void onClick(double lat, double lng) {
+//        LatLng latLng = new LatLng(lat, lng);
+//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//        LatLngBounds latLngBounds = builder.include(latLng).build();
+
+//        try {
+//            startActivityForResult(mPlacePickerIntentBuilder.setLatLngBounds(latLngBounds).build(getActivity()), PLACE_PICKER_REQUEST);
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat + "," + lng + "\"");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);
+            mFrameLayout.setVisibility(View.VISIBLE);
+//        } catch (GooglePlayServicesRepairableException e) {
+//            e.printStackTrace();
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
     }
 

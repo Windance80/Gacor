@@ -19,7 +19,7 @@ public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapter
     private final GacorAdapterOnClickHandler mClickHandler;
 
     public interface GacorAdapterOnClickHandler {
-        void onClick();
+        void onClick(double lat, double lng);
     }
 
     public GacorAdapter(Context context, GacorAdapterOnClickHandler clickHandler, ArrayList<Gacor> list) {
@@ -67,7 +67,7 @@ public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapter
 
         @Override
         public void onClick(View view) {
-            mClickHandler.onClick();
+            mClickHandler.onClick(mGacor.get(getAdapterPosition()).getLat(), mGacor.get(getAdapterPosition()).getLng());
         }
     }
 }
