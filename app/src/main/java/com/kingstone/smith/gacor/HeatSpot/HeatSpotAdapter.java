@@ -1,7 +1,6 @@
 package com.kingstone.smith.gacor.HeatSpot;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -12,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kingstone.smith.gacor.ItemType;
 import com.kingstone.smith.gacor.R;
 
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.Collections;
 import java.util.List;
 

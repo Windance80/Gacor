@@ -1,6 +1,6 @@
 package com.kingstone.smith.gacor.HeatSpot;
 
-import java.util.Date;
+import com.kingstone.smith.gacor.ItemType;
 
 public class ItemHeader extends ItemType {
 

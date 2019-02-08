@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kingstone.smith.gacor.ItemType;
 import com.kingstone.smith.gacor.R;
 import com.kingstone.smith.gacor.data.GacorContract;
 

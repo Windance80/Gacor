@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kingstone.smith.gacor.ItemType;
 import com.kingstone.smith.gacor.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapterViewHolder> {
+public class GacorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Gacor> mGacor;
+    private List<ItemType> mItems = Collections.emptyList();
     private Context mContext;
     private final GacorAdapterOnClickHandler mClickHandler;
 
@@ -22,42 +25,73 @@ public class GacorAdapter extends RecyclerView.Adapter<GacorAdapter.GacorAdapter
         void onClick();
     }
 
-    public GacorAdapter(Context context, GacorAdapterOnClickHandler clickHandler, ArrayList<Gacor> list) {
+    public GacorAdapter(Context context, GacorAdapterOnClickHandler clickHandler, List<ItemType> list) {
         super();
         mContext = context;
         mClickHandler = clickHandler;
-        mGacor = list;
+        mItems = list;
     }
 
     @NonNull
     @Override
-    public GacorAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_gacor, parent, false);
-
-        GacorAdapterViewHolder viewHolder = new GacorAdapterViewHolder(view);
-
-        return viewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        switch (viewType) {
+            case 0: {// header
+                View view = inflater.inflate(R.layout.gacor_header, parent, false);
+                return new HeaderViewHolder(view);
+            }
+            case 1: {// list
+                View view = inflater.inflate(R.layout.gacor_list, parent, false);
+                return new ListViewHolder(view);
+            }
+            default:
+                throw new IllegalStateException("unsupported item type");
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GacorAdapterViewHolder holder, int position) {
-        holder.mTextViewPlace.setText(mGacor.get(position).getPlace());
-        holder.mTextViewDistance.setText(mGacor.get(position).getDistance());
-        holder.mTextViewTime.setText(mGacor.get(position).getTime());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        int viewType = holder.getItemViewType();
+        switch (viewType) {
+            case ItemType.TYPE_HEADER: {
+                GacorHeader header = (GacorHeader) mItems.get(position);
+                HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
+                viewHolder.textViewHeader.setText(header.getHeader());
+                break;
+            }
+            case ItemType.TYPE_LIST: {
+                GacorList list = (GacorList) mItems.get(position);
+                ListViewHolder viewHolder = (ListViewHolder) holder;
+                viewHolder.mTextViewPlace.setText(list.getGacor().getPlace());
+                viewHolder.mTextViewDistance.setText(list.getGacor().getDistance());
+                viewHolder.mTextViewTime.setText(list.getGacor().getTime());
+                break;
+            }
+            default:
+                throw new IllegalStateException("unsupported item type");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mGacor.size();
+        return mItems.size();
     }
 
-    public class GacorAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewHeader;
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            textViewHeader = itemView.findViewById(R.id.textViewHeader);
+        }
+    }
+
+    public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView mTextViewPlace;
         TextView mTextViewDistance;
         TextView mTextViewTime;
 
-        public GacorAdapterViewHolder(View itemView) {
+        public ListViewHolder(View itemView) {
             super(itemView);
             mTextViewPlace = itemView.findViewById(R.id.textViewPlace);
             mTextViewDistance = itemView.findViewById(R.id.textViewDistance);

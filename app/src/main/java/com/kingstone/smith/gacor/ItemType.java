@@ -1,4 +1,4 @@
-package com.kingstone.smith.gacor.HeatSpot;
+package com.kingstone.smith.gacor;
 
 public abstract class ItemType {
     public static final int TYPE_HEADER = 0;

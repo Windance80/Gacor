@@ -1,7 +1,9 @@
 CODE:
--update Gacor fragment so that it's using heatspot that has been updated with allowed null date calculate route
+-Group the data in GacorFragment by time
 -implement click handler in GacorFragment
 -Fix loading screen to cover all screen
+-heatspotEntry:
+	-save only 1 week of history (delete and save new if theres new data on that specific dayOfWeek)
 
 DESIGN:
 -Update the theme to black and green

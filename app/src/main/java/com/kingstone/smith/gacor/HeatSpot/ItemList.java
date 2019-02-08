@@ -1,6 +1,6 @@
 package com.kingstone.smith.gacor.HeatSpot;
 
-import android.graphics.ColorSpace;
+import com.kingstone.smith.gacor.ItemType;
 
 public class ItemList extends ItemType {
 
