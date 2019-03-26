@@ -1,7 +1,14 @@
+PROBLEM:
+-back button from "addHeatspot" fragment take to "Gacor" fragment
+
+PROGRESS:
+-
+
 CODE:
--update Gacor fragment so that it's using heatspot that has been updated with allowed null date calculate route
--implement click handler in GacorFragment
+-Group the data in GacorFragment by time *Scrap
 -Fix loading screen to cover all screen
+-heatspotEntry:
+	-save only 1 week of history (delete and save new if theres new data on that specific dayOfWeek)
 
 DESIGN:
 -Update the theme to black and green

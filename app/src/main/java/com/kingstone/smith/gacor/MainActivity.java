@@ -3,6 +3,7 @@ package com.kingstone.smith.gacor;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements
 
 //    private TextView mTextMessage;
     private FragmentManager mFragmentManager = getSupportFragmentManager();
+    private String BOTTOM_NAV_SELECTED_ID = "ID";
+    BottomNavigationView mNavigation;
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -54,15 +57,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        mTextMessage = (TextView) findViewById(R.id.message);
-//        findViewById(R.id.co)
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mNavigation= (BottomNavigationView) findViewById(R.id.navigation);
+        mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        navigation.setSelectedItemId(R.id.navigation_gacor);
-
-//        GacorFragment gacorFragment = GacorFragment.newInstance("","");
-//        mFragmentManager.beginTransaction().replace(R.id.fragment_container, gacorFragment).commit();
+        mNavigation.setSelectedItemId(R.id.navigation_gacor);
     }
-
 }
